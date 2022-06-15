@@ -19,6 +19,6 @@ runs:
     - name: Build duvet
       working-directory: common/duvet
       run: |
-        cargo instal --path .
+        cargo install --path .
         duvet --help
       shell: bash
