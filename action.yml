@@ -1,13 +1,24 @@
-name: 'Hello World'
-description: 'Greet someone'
-inputs:
-  who-to-greet:
-    description: 'Who to greet'
-    required: true
-    default: 'World'
+name: 'Duvet'
+description: 'Uses Duvet to generate a compliance report and uploads it to s3'
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.who-to-greet }}.
-      shell: bash
+    - uses: actions/checkout@v3
+      with:
+        repository: aws/s2n-quic
+        submodules: true
 
+    - uses: actions-rs/toolchain@v1.0.7
+      id: toolchain
+      with:
+        toolchain: stable
+        override: true
+
+    - uses: camshaft/rust-cache@v1
+
+    - name: Build duvet
+      working-directory: common/duvet
+      run: |
+        cargo instal --path .
+        duvet --help
+      shell: bash
