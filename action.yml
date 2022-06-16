@@ -9,7 +9,8 @@ runs:
   steps:
     - id: quic-dir
       run: |
-        S2N_QUIC_DIR=$(mktemp -d)
+        PWD=$(pwd)
+        S2N_QUIC_DIR=$(mktemp -d -p $PWD)
         echo "::set-output name=S2N_QUIC_DIR::$S2N_QUIC_DIR"
       shell: bash
 
