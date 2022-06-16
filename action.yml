@@ -25,7 +25,14 @@ runs:
       run: cargo install --path .
       shell: bash
 
+    - name: Info
+      working-directory: "${{ github.workspace }}"
+      run: |
+        pwd
+        ls
+      shell: bash
+
     - name: Generate Duvet report
       working-directory: "${{ github.workspace }}"
-      run: pwd
+      run: "${{ inputs.report-script }} ${{ github.sha }}"
       shell: bash
