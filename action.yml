@@ -8,7 +8,9 @@ runs:
   using: "composite"
   steps:
     - id: quic-dir
-      run: S2N_QUIC_DIR=$(mktemp -d)
+      run: |
+        S2N_QUIC_DIR=$(mktemp -d)
+        echo "::set-output name=S2N_QUIC_DIR::$S2N_QUIC_DIR"
       shell: bash
 
     - uses: actions/checkout@v3
