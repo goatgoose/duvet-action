@@ -16,6 +16,9 @@ inputs:
   aws-s3-region:
     description: 'Region of the S3 bucket'
     required: true
+  cdn:
+    description: 'Prefix the S3 URL with a CDN'
+    required: false
 runs:
   using: "composite"
   steps:
@@ -62,4 +65,19 @@ runs:
         REPORT_DIR=$(dirname "${{ inputs.report-script }}")
         TARGET="${{ github.sha }}/compliance.html"
         aws s3 cp "$REPORT_DIR/report.html" "s3://${{ inputs.aws-s3-bucket-name }}/$TARGET" --acl private --follow-symlinks
+        
+        if [ -n "${{ inputs.cdn }}" ]; then
+          PREFIX="${{ inputs.cdn }}"
+        else
+          PREFIX="https://${{ inputs.aws-s3-bucket-name }}.s3.amazonaws.com"
+        fi
+        URL="$PREFIX/$TARGET"
+        
+        echo "::set-output name=URL::$URL"
       shell: bash
+
+    - uses: ouzi-dev/commit-status-updater@v1.1.2
+      with:
+        name: "compliance / report"
+        status: "success"
+        url: "${{ steps.s3.outputs.URL }}"
