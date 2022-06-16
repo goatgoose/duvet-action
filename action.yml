@@ -7,9 +7,14 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - id: quic-dir
+      run: S2N_QUIC_DIR=$(mktemp -d)
+      shell: bash
+
     - uses: actions/checkout@v3
       with:
         repository: aws/s2n-quic
+        path: "${{ steps.quic-dir.outputs.S2N_QUIC_DIR }}"
         submodules: true
 
     - uses: actions-rs/toolchain@v1.0.7
@@ -21,12 +26,18 @@ runs:
     - uses: camshaft/rust-cache@v1
 
     - name: Install Duvet
-      working-directory: common/duvet
+      working-directory: "${{ steps.quic-dir.outputs.S2N_QUIC_DIR }}/common/duvet"
       run: cargo install --path .
       shell: bash
 
     - name: Info
       working-directory: "${{ github.workspace }}"
+      run: |
+        pwd
+        ls
+      shell: bash
+
+    - name: Info default
       run: |
         pwd
         ls
