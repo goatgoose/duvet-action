@@ -1,8 +1,8 @@
 name: 'Duvet'
 description: 'Uses Duvet to generate a compliance report and uploads it to s3'
 inputs:
-  rfcs:
-    description: 'List of RFCs for Duvet to extract'
+  report-script:
+    description: 'Path to script that generates a duvet report'
     required: true
 runs:
   using: "composite"
@@ -25,6 +25,6 @@ runs:
       run: cargo install --path .
       shell: bash
 
-    - name: Initialize Duvet
-      run: echo "${{ inputs.rfcs }}"
+    - name: Generate Duvet report
+      run: "${{ inputs.report-script }} ${{ github.sha }}"
       shell: bash
