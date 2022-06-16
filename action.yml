@@ -1,20 +1,20 @@
 name: 'Duvet'
-description: 'Uses Duvet to generate a compliance report and uploads it to s3'
+description: 'Uses Duvet to generate a compliance report and uploads it to S3'
 inputs:
   report-script:
-    description: 'Path to script that generates a duvet report'
+    description: 'Path to script that generates a Duvet report'
     required: true
   aws-access-key-id:
     description: 'AWS access key ID with S3 permissions'
     required: true
   aws-secret-access-key:
-    description: 'AWS secret access key'
+    description: 'AWS secret key'
     required: true
   aws-s3-bucket-name:
-    description: 'Destination S3 bucket for duvet reports'
+    description: 'Destination S3 bucket name for duvet reports'
     required: true
   aws-s3-region:
-    description: 'Region of the S3 bucket'
+    description: 'S3 bucket region'
     required: true
   cdn:
     description: 'Prefix the S3 URL with a CDN'
