@@ -4,6 +4,18 @@ inputs:
   report-script:
     description: 'Path to script that generates a duvet report'
     required: true
+  aws-access-key-id:
+    description: 'AWS access key ID with S3 permissions'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS secret access key'
+    required: true
+  aws-s3-bucket-name:
+    description: 'Destination S3 bucket for duvet reports'
+    required: true
+  aws-s3-region:
+    description: 'Region of the S3 bucket'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -33,20 +45,21 @@ runs:
       run: cargo install --path .
       shell: bash
 
-    - name: Info
-      working-directory: "${{ github.workspace }}"
-      run: |
-        pwd
-        ls
-      shell: bash
-
-    - name: Info default
-      run: |
-        pwd
-        ls
-      shell: bash
-
     - name: Generate Duvet report
       working-directory: "${{ github.workspace }}"
       run: "${{ inputs.report-script }} ${{ github.sha }}"
+      shell: bash
+
+    - uses: aws-actions/configure-aws-credentials@v1.6.1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key}}
+        aws-region: ${{ inputs.aws-s3-region }}
+
+    - name: Upload to S3
+      id: s3
+      run: |
+        REPORT_DIR=$(dirname "${{ inputs.report-script }}")
+        TARGET="${{ github.sha }}/compliance.html"
+        aws s3 cp "$REPORT_DIR/report.html" "s3://${{ inputs.aws-s3-bucket-name }}/$TARGET" --acl private --follow-symlinks
       shell: bash
