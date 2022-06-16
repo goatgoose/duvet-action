@@ -25,3 +25,22 @@ The name of the destination S3 bucket which the report will be uploaded to.
 ### `cdn: ''`
 
 An optional CDN which will prefix the published S3 URL in the `compliance / report` Github check.
+
+
+## Example usage:
+
+```yml
+jobs:
+  duvet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: goatgoose/duvet-action@v1.0.0
+        with:
+          report-script: compliance/generate_report.sh
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-s3-bucket-name: s2n-tls-ci-artifacts
+          aws-s3-region: us-west-2
+          cdn: https://d3fqnyekunr9xg.cloudfront.net
+```
